@@ -1,0 +1,28 @@
+ClaimEvent:
+  tableName: ohrm_claim_event
+  columns:
+    id:
+      type: integer(4)
+      primary: true
+      autoincrement: true
+    name:
+      type: string(1000)
+    description:
+      type: string(1000)
+    added_by:
+      type: integer(4)
+
+
+ExpenseType:
+  tableName: ohrm_expense_type
+  columns:
+    id:
+      type: integer(4)
+      primary: true
+      autoincrement: true
+    name:
+      type: string(1000)
+    description:
+      type: string(1000)
+    status:
+      type: string(64)

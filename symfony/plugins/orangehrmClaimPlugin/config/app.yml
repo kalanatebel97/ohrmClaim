@@ -1,0 +1,3 @@
+all:
+  orangehrmClaimModulePlugin:
+    version: '1.0'

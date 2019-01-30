@@ -1,0 +1,43 @@
+ClaimEvent:
+  pluginName: orangehrmClaimModulePlugin
+  hasSelectableRows: true
+  unSelectableRowsIds: []
+  idValueGetter: getId
+  tableWidth: 100%
+  buttons:
+    Add:
+      label: Add
+      type: button
+    Delete:
+      label: Delete
+      type: button
+      class: delete
+      data-toggle: modal
+      data-target: '#deleteConfModal'
+    buttonsPosition: before-data
+    formMethod: post
+    formAction: claim/deleteEvents
+    assets:
+    jsInitMethods: []
+
+ExpenseType:
+  pluginName: orangehrmClaimModulePlugin
+  hasSelectableRows: true
+  unSelectableRowsIds: []
+  idValueGetter: getId
+  tableWidth: 100%
+  buttons:
+    Add:
+      label: Add
+      type: button
+    Delete:
+      label: Delete
+      type: button
+      class: delete
+      data-toggle: modal
+      data-target: '#deleteConfModal'
+    buttonsPosition: before-data
+    formMethod: post
+    formAction: claim/deleteExpenses
+    assets:
+    jsInitMethods: []

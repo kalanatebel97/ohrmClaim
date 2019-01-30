@@ -1,0 +1,5 @@
+ClaimEvent:
+  0: { id: 1, name: "event1", description: "event1 desc", addedBy: 1}
+  1: { id: 2, name: "event2", description: "event2 desc", addedBy: 2}
+  2: { id: 3, name: "event3", description: "event3 desc", addedBy: 3}
+  3: { id: 4, name: "event4", description: "event4 desc", addedBy: 3}
