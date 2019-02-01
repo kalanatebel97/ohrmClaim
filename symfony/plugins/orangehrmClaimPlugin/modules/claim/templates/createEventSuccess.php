@@ -19,28 +19,26 @@
  */
 
 use_stylesheet(plugin_web_path('orangehrmClaimPlugin', 'css/createEvent'));
-use_javascript(plugin_web_path('orangehrmClaimPlugin', 'js/viewEventSuccess'));
-
-
-
+//use_javascript(plugin_web_path('orangehrmClaimPlugin', 'js/viewEventSuccess'));
+use_javascript(plugin_web_path('orangehrmClaimPlugin', 'js/createEvent'));
 ?>
 
 <div class="box" id="createEvent">
     <div class="head">
-        <h1 id="saveFormHeading">Create Event</h1>
+        <h1 id="saveFormHeading"><?php echo __("Create Event"); ?></h1>
     </div>
     <div class="inner" id="innerDiv">
 
         <?php include_partial('global/flash_messages'); ?>
         <form name="frmCreateEvent" id="frmCreateEvent" method="post"
-              action="<?php echo url_for('claim/CreateEvent'); ?>">
+              action="<?php echo url_for('claim/createEvent'); ?>">
 
             <?php echo $form->renderHiddenFields(); ?>
 
             <fieldset>
 
                 <ol>
-                    <li class="largeTextBox">
+                    <li>
                         <?php echo $form['name']->renderLabel(); ?>
                         <?php echo $form['name']->render(array("class" => "block default editable valid")); ?>
                     </li>
@@ -55,7 +53,7 @@ use_javascript(plugin_web_path('orangehrmClaimPlugin', 'js/viewEventSuccess'));
                 </ol>
 
                 <p>
-                    <input type="submit" class="" name="btnCreate" id="btnCreate" value="<?php echo __('Create') ?>"/>
+                    <input type="button" class="editable"  name="btnCreate" id="btnCreate" value="<?php echo __('Create') ?>"/>
                     <input type="button" class="btn reset" name="btnCancel" id="btnCancel"
                            value="<?php echo __("Cancel"); ?>"/>
                 </p>
@@ -90,5 +88,12 @@ use_javascript(plugin_web_path('orangehrmClaimPlugin', 'js/viewEventSuccess'));
 
     var lang_required = '<?php echo __(ValidationMessages::REQUIRED); ?>';
     var lang_maxChars = '<?php echo __(ValidationMessages::TEXT_LENGTH_EXCEEDS, array('%amount%' => 255)); ?>';
-    var viewEventUrl = '<?php echo url_for('claim/ViewEvent'); ?>';
+    var viewEventUrl = '<?php echo url_for('claim/viewEvent'); ?>';
+    var lang_edit_event = "<?php echo __("Edit"); ?>";
+    var lang_create_event = "<?php echo __("Create"); ?>";
+    var eventId = '<?php echo $eventId;?>';
+    var saveFormHeading          = "<?php echo __("Create Event"); ?>";
+    var edit_form_heading          = "<?php echo __("Edit Event"); ?>";
+
+
 </script>

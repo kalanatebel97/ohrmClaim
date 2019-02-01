@@ -11,7 +11,15 @@ ClaimEvent:
       type: string(1000)
     added_by:
       type: integer(4)
-
+    is_deleted:
+      type: integer(1)
+      notnull: true
+      default: '0'
+  relations:
+      User:
+        local: added_by
+        foreign: id
+        type: one
 
 ExpenseType:
   tableName: ohrm_expense_type
@@ -24,5 +32,122 @@ ExpenseType:
       type: string(1000)
     description:
       type: string(1000)
+    added_by:
+      type: integer(4)
     status:
       type: string(64)
+    is_deleted:
+      type: integer(1)
+      notnull: true
+      default: '0'
+  relations:
+      User:
+        local: added_by
+        foreign: id
+        type: one
+
+Expense:
+  tableName: ohrm_expense
+  columns:
+    id:
+      type: integer(4)
+      primary: true
+      autoincrement: true
+    expense_type_id:
+      type: integer(4)
+    date:
+      type: datetime
+    amount:
+      type: string(1000)
+    note:
+      type: string(1000)
+    request_id:
+      type: integer(4)
+    is_deleted:
+      type: integer(1)
+      notnull: true
+      default: '0'
+  relations:
+    ExpenseType:
+      local: expense_type_id
+      foreign: id
+      type: one
+    ClaimRequest:
+       local: request_id
+       foreign: id
+       type: one
+
+ClaimRequest:
+  tableName: ohrm_claim_request
+  columns:
+    id:
+      type: integer(4)
+      primary: true
+      autoincrement: true
+    emp_number:
+      type: integer(4)
+    added_by:
+      type: integer(4)
+    event_type:
+      type: string(1000)
+    description:
+      type: string(1000)
+    currency:
+      type: string(1000)
+    is_deleted:
+      type: integer(1)
+      notnull: true
+      default: '0'
+  relations:
+    ClaimEvent:
+      local: event_type
+      foreign: id
+      type: one
+    ExpenseType:
+      local: expense_type
+      foreign: id
+      type: one
+    Employee:
+      local: emp_number
+      foreign: emp_number
+      foreignType: many
+      type: one
+    User:
+      local: added_by
+      foreign: id
+      type: one
+
+
+ClaimAttachment:
+  tableName: ohrm_claim_attachment
+  columns:
+    request_id:
+      type: integer(4)
+      primary: true
+    eattach_id as attach_id:
+      type: integer
+      primary: true
+    eattach_size as size:
+      type: integer(4)
+      default: '0'
+    eattach_desc as description: string(200)
+    eattach_filename as filename: string(100)
+    eattach_attachment as attachment: blob(2147483647)
+    eattach_type as file_type: string(200)
+    attached_by:
+      type: integer(4)
+      default: null
+    attached_by_name: string(200)
+    attached_time: timestamp
+  relations:
+    ClaimRequest:
+      local: request_id
+      foreign: id
+      type: one
+    Employee:
+      local: attached_by
+      foreign: emp_number
+      type: one
+
+
+

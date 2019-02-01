@@ -17,13 +17,36 @@
  * Boston, MA  02110-1301, USA
  */
 
-/**
- * Created by PhpStorm.
- * User: administrator
- * Date: 2/1/19
- * Time: 9:54 AM
- */
+
 class orangehrmClaimPluginAllTests
 {
+    protected function setUp() {
 
+    }
+
+
+    public static function suite(){
+        $suite = new PHPUnit_Framework_TestSuite('orangehrmClaimPluginAllTest');
+
+        $suite->addTestFile(dirname(__FILE__) . '/model/service/EventServiceTest.php');
+        $suite->addTestFile(dirname(__FILE__) . '/model/dao/EventDaoTest.php');
+        $suite->addTestFile(dirname(__FILE__) . '/model/service/ExpenseServiceTest.php');
+        $suite->addTestFile(dirname(__FILE__) . '/model/dao/ExpenseDaoTest.php');
+        $suite->addTestFile(dirname(__FILE__) . '/model/service/ClaimServiceTest.php');
+        $suite->addTestFile(dirname(__FILE__) . '/model/dao/ClaimDaoTest.php');
+
+
+        return $suite;
+    }
+
+    public static function main() {
+        PHPUnit_TextUI_TestRunner::run(self::suite());
+    }
 }
+
+if (PHPUnit_MAIN_METHOD == 'orangehrmClaimPluginAllTests::main') {
+    orangehrmClaimPluginAllTests::main();
+}
+
+
+

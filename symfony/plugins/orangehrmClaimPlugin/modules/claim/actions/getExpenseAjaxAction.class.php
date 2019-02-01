@@ -23,7 +23,44 @@
  * Date: 24/1/19
  * Time: 2:09 PM
  */
-class getExpenseAjaxAction
+class getExpenseAjaxAction extends sfAction
 {
+    protected $expenseService;
+
+    /**
+     * @return ExpenseService
+     */
+    public function getExpenseService()
+    {
+        if (!($this->expenseService instanceof ExpenseService)) {
+            $this->expenseService = new ExpenseService();
+        }
+        return $this->expenseService;
+    }
+
+    /**
+     * @param $expenseService
+     */
+    public function setExpenseService($expenseService)
+    {
+        $this->expenseService = $expenseService;
+    }
+
+    public function execute($request)
+    {
+        $this->expenseId = $request->getParameter('expenseID', null);
+        $expenseArray = array();
+        if (!is_null($this->expenseId)) {
+             $expenseArray = $this->getExpenseService()->getExpenseAsArray($this->expenseId);
+        }
+        $response = $this->getResponse();
+        $response->setHttpHeader('Expires', '0');
+        $response->setHttpHeader("Cache-Control", "must-revalidate, post-check=0, pre-check=0, max-age=0");
+        $response->setHttpHeader("Cache-Control", "private", false);
+
+        echo json_encode(array('data' => $expenseArray));
+        return sfView::NONE;
+
+    }
 
 }

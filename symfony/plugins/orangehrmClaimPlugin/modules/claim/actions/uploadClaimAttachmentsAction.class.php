@@ -17,13 +17,71 @@
  * Boston, MA  02110-1301, USA
  */
 
-/**
- * Created by PhpStorm.
- * User: administrator
- * Date: 25/1/19
- * Time: 4:58 PM
- */
-class uploadClaimAttachmentsAction
+class uploadClaimAttachmentsAction extends sfAction
 {
+
+    /**
+     * @param $request
+     * @throws PIMServiceException
+     * @throws sfStopException
+     */
+    public function execute($request)
+    {
+
+        $loggedInEmpNum = empty($this->getUser()->getEmployeeNumber()) ? null : $this->getUser()->getEmployeeNumber();
+        $loggedInUserName = $_SESSION['fname'];
+
+        $this->claimRequestId = $request->getParameter('claimRequestId', null);
+
+        if (is_null($this->claimRequestId)) {
+            $this->getUser()->setFlash('error', __(TopLevelMessages::SAVE_FAILURE));
+        }
+
+        $this->form = new ClaimAttachmentForm(array(),
+            array('loggedInUser' => $loggedInEmpNum,
+                'loggedInUserName' => $loggedInUserName), true);
+
+        if ($this->getRequest()->isMethod('post')) {
+
+            $attachId = $request->getParameter('seqNO');
+            $screen = $request->getParameter('screen');
+
+            $permission = $this->getDataGroupPermissions($screen . '_claimAttachments', $request->getParameter('requestId'));
+
+
+                // Handle the form submission
+                $this->form->bind($request->getPostParameters(), $request->getFiles());
+
+                if ($this->form->isValid()) {
+                    $requestId = $this->form->getValue('requestId');
+//                    if (!$this->IsActionAccessible($requestId)) {
+//                        $this->forward(sfConfig::get('sf_secure_module'), sfConfig::get('sf_secure_action'));
+//                    }
+
+                    $this->form->save();
+                    $this->getUser()->setFlash('listAttachmentPane.success', __(TopLevelMessages::SAVE_SUCCESS));
+                } else {
+                    $validationMsg = '';
+                    foreach ($this->form->getWidgetSchema()->getPositions() as $widgetName) {
+                        if ($this->form[$widgetName]->hasError()) {
+                            $validationMsg .= __(TopLevelMessages::FILE_SIZE_SAVE_FAILURE);
+                        }
+                    }
+
+                    $this->getUser()->setFlash('saveAttachmentPane.warning', $validationMsg);
+                    $this->getUser()->setFlash('attachmentComments', $request->getParameter('txtAttDesc'));
+                    $this->getUser()->setFlash('attachmentSeqNo', $request->getParameter('seqNO'));
+                }
+        }
+
+        $this->redirect($request->getReferer());
+    }
+
+    private function getDataGroupPermissions($string)
+    {
+
+        return new ResourcePermission(true, true, true, true);
+    }
+
 
 }

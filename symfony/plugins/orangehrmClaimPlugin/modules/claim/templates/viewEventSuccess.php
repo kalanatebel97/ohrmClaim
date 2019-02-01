@@ -45,8 +45,8 @@ use_javascript(plugin_web_path('orangehrmClaimPlugin', 'js/viewEventSuccess'));
     var lang_required = '<?php echo __(ValidationMessages::REQUIRED); ?>';
     var lang_maxChars = '<?php echo __(ValidationMessages::TEXT_LENGTH_EXCEEDS, array('%amount%' => 30)); ?>';
     var lang_addFormHeading = '<?php echo __('Create Event'); ?>';
-    var addEventUrl = '<?php echo url_for('claim/CreateEvent'); ?>';
-    var viewEventUrl = '<?php echo url_for('claim/ViewEvent'); ?>';
+    var addEventUrl = '<?php echo url_for('claim/createEvent'); ?>';
+    var viewEventUrl = '<?php echo url_for('claim/viewEvent'); ?>';
 
 </script>
 

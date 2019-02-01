@@ -17,13 +17,135 @@
  * Boston, MA  02110-1301, USA
  */
 
-/**
- * Created by PhpStorm.
- * User: administrator
- * Date: 7/1/19
- * Time: 10:45 AM
- */
-class addClaimAction
-{
+
+class submitClaimAction extends sfAction {
+
+   protected $claimService;
+   protected $expenseService;
+
+    /**
+     * @return ExpenseService
+     */
+    public function getExpenseService()
+    {
+        if (!($this->expenseService instanceof ExpenseService)) {
+            $this->expenseService = new ExpenseService();
+        }
+
+        return $this->expenseService;
+    }
+
+    /**
+     * @param $expenseService
+     */
+    public function setExpenseService($expenseService)
+    {
+        $this->expenseService = $expenseService;
+    }
+
+    /**
+     * @return ClaimService
+     */
+    public function getClaimService()
+    {
+        if (!($this->claimService instanceof ClaimService)) {
+        $this->claimService = new ClaimService();
+    }
+        return $this->claimService;
+
+    }
+
+    /**
+     * @param mixed $claimService
+     */
+    public function setClaimService($claimService)
+    {
+        $this->claimService = $claimService;
+
+    }
+
+    public function execute($request)
+    {
+        $this->claimId = $request->getParameter('id', null);
+        $defaults = array();
+        if (!is_null($this->claimId)) {
+
+            $defaults = $this->getClaimService()->getClaimAsArray($this->claimId);
+        }
+
+        $this->form = new ClaimRequestForm($defaults);
+
+        $this->addExpenseform = new AddExpenseForm();
+
+        $expense = $this->getExpenseService()->getExpenseByClaimRequestId($this->claimId);
+
+        if (!is_null($this->claimId)) {
+
+            $this->setListComponent($expense);
+        }
+
+        if ($request->isMethod('post')) {
+
+            $this->form->bind($request->getParameter($this->form->getName()));
+
+            if ($this->form->isValid()) {
+                $formValues = $this->form->getValues();
+                $loggedInUser = $this->getUser()->getAttribute('user');
+                $formValues['emp_num'] = $loggedInUser->getEmployeeNumber();
+                $formValues['addedBy'] = $loggedInUser->getUserId();
+                $result = $this->getClaimService()->saveClaim($formValues);
+
+                if ($result instanceof ClaimRequest) {
+                    $this->getUser()->setFlash('success', __(TopLevelMessages::SAVE_SUCCESS));
+                } else {
+                    $this->getUser()->setFlash('error', __(TopLevelMessages::SAVE_FAILURE));
+                }$this->redirect('claim/viewClaim');
+            } else {
+                $this->getUser()->setFlash('error', __(TopLevelMessages::VALIDATION_FAILED));
+
+            }
+
+        }
+    }
+    public function setListComponent($expense)
+    {
+        $configurationFactory = new EmployeeClaimExpensesListConfigurationFactory();
+        $buttons = array();
+        $hasSelectableRows = false;
+
+        $buttons['Add'] = array('label' => 'Add');
+        $hasSelectableRows = true;
+        $buttons['Delete'] = array(
+            'type' => 'submit',
+            'label' => 'Delete',
+            'class' => 'delete',
+            'id'=>'dialogExpenseDeleteBtn',
+            'data-toggle' => 'modal',
+            'data-target' => '#deleteConfModal'
+        );
+
+        $configurationFactory->setRuntimeDefinitions(array(
+            'hasSelectableRows' => $hasSelectableRows,
+            'hasSummary' => true,
+            'buttons' => $buttons,
+            'buttonsPosition' => 'before-data',
+            'title' => __(''),
+            'formAction' => 'claim/deleteExpense?claimId='.$this->claimId.'?referrer=submit',
+            'formMethod' => 'post',
+            'summary' => array(
+                'summaryLabel' => 'Total',
+                'summaryField' => __('Amount'),
+                'summaryFunction' => 'SUM',
+                'summaryFieldDecimals' => 2,
+            )
+        ));
+
+        $noOfRecords = sfConfig::get('app_items_per_page');
+        ohrmListComponent::setConfigurationFactory($configurationFactory);
+        ohrmListComponent::setPageNumber(1);
+        ohrmListComponent::setListData($expense);
+        ohrmListComponent::setItemsPerPage($noOfRecords);
+        ohrmListComponent::setNumberOfRecords($this->getExpenseService()->getExpenseCount());
+    }
 
 }

@@ -17,13 +17,11 @@
  * Boston, MA  02110-1301, USA
  */
 
-/**
- * Created by PhpStorm.
- * User: administrator
- * Date: 30/1/19
- * Time: 4:16 PM
- */
-class deleteMyExpense
-{
 
+class deleteMyExpenseAction extends deleteExpenseAction
+{
+    protected function getRedirectUrl($claimId)
+    {
+        return 'claim/submitClaim?id='.$claimId;
+    }
 }

@@ -17,8 +17,7 @@
  * Boston, MA  02110-1301, USA
  */
 
-
-class deleteExpenseAction extends sfAction {
+class deleteExpenseTypeAction extends sfAction {
 
     private $expenseService;
 
@@ -30,21 +29,18 @@ class deleteExpenseAction extends sfAction {
         if (!($this->expenseService instanceof ExpenseService)) {
         $this->expenseService = new ExpenseService();
     }
-
         return $this->expenseService;
     }
 
     /**
-     * @param mixed $expenseService
+     * @param $expenseService
      */
     public function setExpenseService($expenseService) {
 
         $this->expenseService = $expenseService;
     }
-
     public function execute($request) {
 
-        // TODO: Implement execute() method.
         $userPermissions = $this->getDataGroupPermissions('time_customers');
 
         if ($userPermissions->canDelete()) {
@@ -53,18 +49,16 @@ class deleteExpenseAction extends sfAction {
             $form->bind($request->getParameter($form->getName()));
 
             if ($form->isValid()) {
-                $toBeDeletedExpenseIds = $request->getParameter('chkSelectRow');
-                if (!empty($toBeDeletedExpenseIds)) {
-                    foreach ($toBeDeletedExpenseIds as $toBeDeletedExpenseId) {
-                        $event = $this->getExpenseService()->deleteExpenseTypes($toBeDeletedExpenseId);
+                $toBeDeletedExpenseTypeIds = $request->getParameter('chkSelectRow');
+                if (!empty($toBeDeletedExpenseTypeIds)) {
+                    foreach ($toBeDeletedExpenseTypeIds as $toBeDeletedExpenseTypeId) {
+                        $expenseType = $this->getExpenseService()->deleteExpenseTypes($toBeDeletedExpenseTypeId);
                     }
                     $this->getUser()->setFlash('success', __(TopLevelMessages::DELETE_SUCCESS));
                 }
             }
             $this->redirect('claim/viewExpense');
         }
-
-
     }
 
     /**
@@ -75,7 +69,5 @@ class deleteExpenseAction extends sfAction {
 
         return new ResourcePermission(true, true, true, true);
     }
-
-
 }
 

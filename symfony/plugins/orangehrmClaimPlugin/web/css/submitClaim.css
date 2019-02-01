@@ -1,0 +1,256 @@
+.box {
+    margin:20px;
+    position:relative;
+}
+.box a {
+    text-decoration: underline;
+    cursor: pointer;
+}
+.box div.top {
+    width:100%;
+    margin-bottom:10px;
+    border-bottom:1px solid #dedede;
+    padding-bottom:13px;
+    overflow:hidden;
+}
+.box .inner {
+    background:#f7f6f6;
+    padding:15px;
+    border:1px solid #dedede;
+    border-top:none;
+    -moz-border-radius-bottomright: 3px;
+    -webkit-border-bottom-right-radius: 3px;
+    border-bottom-right-radius: 3px;
+    -moz-border-radius-bottomleft: 3px;
+    -webkit-border-bottom-left-radius: 3px;
+    border-bottom-left-radius: 3px;
+    overflow:hidden;
+    margin-bottom:19px;
+}
+.box .head {
+    position:relative;
+}
+.box .head h1 {
+
+    font-size:18px;
+    color:#5d5d5d;
+    padding:9px 15px;
+    line-height:20px;
+    border:1px solid #dedede;
+    -moz-border-radius-topleft: 3px;
+    -webkit-border-top-left-radius: 3px;
+    border-top-left-radius: 3px;
+    -moz-border-radius-topright: 3px;
+    -webkit-border-top-right-radius: 3px;
+    border-top-right-radius: 3px;
+}
+.box h2 {
+    font-weight: bold;
+    font-size: 15px;
+}
+.box h3 {
+    font-weight: bold;
+    font-size: 13px;
+}
+.noHeader .inner {
+    border:1px solid #dedede;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+}
+.box .toggle {
+
+    width:9px;
+    height:8px;
+    text-indent:-9999px;
+    display:block;
+    position:absolute;
+    top:0;
+    left:0;
+    width:100%;
+    height:40px;
+}
+
+.box ul.top {
+    float:right;
+    padding: 10px 0 0 ;
+}
+.box ul.bottom {
+    float:right;
+    padding:15px 0 0 ;
+}
+
+.box div.bottom {
+    border-top:1px solid #dedede;
+    margin-top:10px;
+    padding-top:10px;
+}
+
+.miniList p {
+    margin-bottom: 10px;
+    padding-top: 0;
+}
+form ol li.largeTextBox span.validation-error {
+    top:85px;
+}
+.pimPane .head, .pimPane .inner {
+    margin-left:220px;
+}
+input[type=button].hover,
+input[type=submit].hover {
+    background-color: #086912;
+}
+
+input[type=button],
+input[type=submit] {
+    background-color: #33ac3f;
+}
+
+input[type=button].cancel.hover,
+input[type=submit].cancel.hover {
+    background-color: #4d4d4d;
+}
+
+input[type=button].cancel,
+input[type=submit].cancel {
+    background-color: #848484;
+}
+
+input[type=button].delete.hover,
+input[type=submit].delete.hover {
+    background-color: #782918;
+}
+input[type=button].delete,
+input[type=submit].delete {
+    background-color: #aa4935;
+}
+
+input[type=button].reset.hover,
+input[type=reset].reset.hover,
+input[type=submit].reset.hover {
+    background-color: #4d4d4d;
+}
+
+input[type=button].reset,
+input[type=reset].reset,
+input[type=submit].reset {
+    background-color: #848484;
+}
+form ol {
+    border-bottom:1px solid #dedede;
+    overflow:hidden;
+    padding-bottom: 5px;  /* ruchira: fix overlap between validation error in last input field */
+    margin-bottom: 10px;
+}
+form ol li {
+    float:left;
+    position:relative;
+    width:90%;
+    margin:3px 0 12px 0;
+}
+form ol li label {
+    display:block;
+    color:#5d5d5d;
+    width:150px;
+    float:left;
+}
+form ol li label.line {
+    width: auto;
+    margin-right: 10px;
+}
+
+/* eg: From label for date range. Left margin is 0 */
+form ol li label.sublabel1 {
+    width:auto;
+    margin-left: 0px;
+    margin-right: 10px;
+}
+
+/* eg: To label for date range */
+form ol li label.sublabel2 {
+    width:auto;
+    margin-left: 20px;
+    margin-right: 10px;
+}
+
+
+form ol li input {
+    float:left;
+    width:225px;
+}
+form input, form select,  form textarea {
+    font-size:13px;
+    border:1px solid #d2d1d1;
+    color:#5d5d5d;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+    outline:none;
+    padding:4px 6px;
+    background-color: #FFF;
+}
+form ol li select {
+    float:left;
+    width:239px;
+    height:25px;
+    margin-top:1px;
+    padding:3px 6px;
+}
+
+form ol li select.auto-width {
+    min-width:239px;
+    width: auto;
+}
+
+form ol li textarea {
+    float:left;
+    width:250px;
+    height:80px;
+}
+form ol li input[type=text] {
+    height:16px;
+
+}
+form ol li input[type="file"] {
+    margin-bottom: 5px;
+}
+form ol li input.calendar {
+    width:165px;
+    float:left;
+}
+form ol li.line {
+    width:100%;
+}
+form ol li.new {
+    clear:left;
+}
+form ol li.noLabel {
+    margin-left: 150px;
+}
+form ol li.noLabel .fieldHelpBottom {
+    left: 0;
+}
+form ol li.required {
+    float:left;
+    width:425px;
+    margin-top:9px;
+    color:#a9a9a9;
+    font-size:11px;
+}
+div.searchForm ol li.required {
+    clear:both;
+}
+
+form ol li.required em {
+    color:#aa4935;
+}
+
+form ol li label em {
+    color:#aa4935;
+}
+form ol li.helpText {
+    float:left;
+    margin-top:9px;
+    color:#a9a9a9;
+    font-size:12px;
+}

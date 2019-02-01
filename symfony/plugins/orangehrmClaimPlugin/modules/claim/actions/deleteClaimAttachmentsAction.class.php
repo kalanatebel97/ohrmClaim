@@ -18,36 +18,38 @@
  */
 
 
-class deleteClaimAttachments extends sfAction
+class deleteClaimAttachmentsAction extends sfAction
 {
     public function execute($request)
     {
         $this->form = new  EmployeeAttachmentDeleteForm(array(), array(), true);
+        $this->claimRequestId = $request->getParameter('claimRequestId', null);
+//        var_dump($request->getParameterHolder()->getAll());die;
 
         $this->form->bind($request->getParameter($this->form->getName()));
         if ($this->form->isValid()) {
-            $claimRequestId = $request->getParameter('request_id', false);
-//            if (!$claimRequestId) {
+
+            //            if (!$claimRequestId) {
 //                throw new PIMServiceException("No Employee ID given");
 //            }
 //            if (!$this->IsActionAccessible($claimRequestId)) {
 //                $this->forward(sfConfig::get('sf_secure_module'), sfConfig::get('sf_secure_action'));
 //            }
-
             $attachmentsToDelete = $request->getParameter('chkattdel', array());
             if ($attachmentsToDelete) {
                 $service = new ClaimService();
-                $service->deleteClaimAttachments($claimRequestId, $attachmentsToDelete);
+                $service->deleteClaimAttachments( $this->claimRequestId, $attachmentsToDelete);
                 $this->getUser()->setFlash('listAttachmentPane.success', __(TopLevelMessages::DELETE_SUCCESS));
             }
-        } else {
-            $this->handleBadRequest();
-            $this->forwardToSecureAction();
+//        } else {
+//            $this->handleBadRequest();
+//            $this->forwardToSecureAction();
+//        }
+
+            $this->redirect('claim/assignClaim?id=' .$this->claimRequestId);
+        }else{
+            var_dump($this->form->getErrorSchema()->getErrors());die;
         }
-
-        $this->redirect('claim/assignClaim?id=' .$this->claimRequestId);
     }
-
-
 
 }

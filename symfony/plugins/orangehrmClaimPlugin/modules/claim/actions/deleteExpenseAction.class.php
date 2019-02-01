@@ -17,13 +17,60 @@
  * Boston, MA  02110-1301, USA
  */
 
-/**
- * Created by PhpStorm.
- * User: administrator
- * Date: 17/1/19
- * Time: 4:58 PM
- */
-class deleteExpenseAction
+class deleteExpenseAction extends sfAction
 {
+    private $expenseService;
+
+    /**
+     * @return ExpenseService
+     */
+    public function getExpenseService() {
+
+        if (!($this->expenseService instanceof ExpenseService)) {
+            $this->expenseService = new ExpenseService();
+        }
+        return $this->expenseService;
+    }
+    /**
+     * @param $expenseService
+     */
+    public function setExpenseService($expenseService) {
+
+        $this->expenseService = $expenseService;
+    }
+
+    public function execute($request) {
+
+        $userPermissions = $this->getDataGroupPermissions('time_customers');
+        $this->claimId = $request->getParameter('claimId', null);
+
+        if ($userPermissions->canDelete()) {
+
+            $form = new DefaultListForm();
+            $form->bind($request->getParameter($form->getName()));
+
+            if ($form->isValid()) {
+                $toBeDeletedExpenseIds = $request->getParameter('chkSelectRow');
+                if (!empty($toBeDeletedExpenseIds)) {
+                    foreach ($toBeDeletedExpenseIds as $toBeDeletedExpenseId) {
+                        $expense = $this->getExpenseService()->deleteExpenses($toBeDeletedExpenseId);
+                    }
+                    $this->getUser()->setFlash('success', __(TopLevelMessages::DELETE_SUCCESS));
+                }
+            }
+
+            $this->redirect($request->getReferer());
+            }
+
+        }
+
+    /**
+     * @param $string
+     * @return ResourcePermission
+     */
+    private function getDataGroupPermissions($string) {
+
+        return new ResourcePermission(true, true, true, true);
+    }
 
 }

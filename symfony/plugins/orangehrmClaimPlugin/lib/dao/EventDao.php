@@ -17,14 +17,14 @@
  * Boston, MA  02110-1301, USA
  */
 
-class CreateEventDao extends BaseDao
-{
+class EventDao extends BaseDao {
+
     /**
-     * @param ClaimEvent $event
+     * @param $event
+     * @return mixed
      * @throws DaoException
      */
-    public function saveEvent(ClaimEvent $event)
-    {
+    public function saveEvent($event) {
 
         try {
             $event->save();
@@ -34,6 +34,12 @@ class CreateEventDao extends BaseDao
         }
 
     }
+
+    /**
+     * @param bool $activeOnly
+     * @return int
+     * @throws DaoException
+     */
     public function getEventCount($activeOnly = true) {
 
         try {
@@ -54,14 +60,15 @@ class CreateEventDao extends BaseDao
      * @return mixed
      * @throws DaoException
      */
-    public function getEventById($id)
-    {
+    public function getEventById($id) {
+
 
         try {
             return Doctrine::getTable('ClaimEvent')->find($id);
         } catch (Exception $e) {
             throw new DaoException($e->getMessage(), $e->getCode(), $e);
         }
+
 
     }
 
@@ -74,8 +81,8 @@ class CreateEventDao extends BaseDao
      * @return Doctrine_Collection
      * @throws DaoException
      */
-    public function getEventList($limit = 50, $offset = 0, $sortField = 'name', $sortOrder = 'ASC', $activeOnly = true)
-    {
+    public function getEventList($limit = 50, $offset = 0, $sortField = 'name', $sortOrder = 'ASC', $available = true) {
+
 
         $sortField = ($sortField == "") ? 'name' : $sortField;
         $sortOrder = strcasecmp($sortOrder, 'DESC') === 0 ? 'DESC' : 'ASC';
@@ -83,7 +90,7 @@ class CreateEventDao extends BaseDao
         try {
             $q = Doctrine_Query :: create()
                 ->from('ClaimEvent');
-            if ($activeOnly == true) {
+            if ($available == true) {
                 $q->addWhere('is_deleted = 0');
             }
             $q->orderBy($sortField . ' ' . $sortOrder)
@@ -97,18 +104,34 @@ class CreateEventDao extends BaseDao
     }
 
     /**
+     * @param $id
+     * @return mixed
+     * @throws DaoException
+     */
+    public function getClaimEvent($id) {
+
+        try {
+            return Doctrine :: getTable('ClaimEvent')->find($id);
+
+        } catch (Exception $e) {
+            throw new DaoException($e->getMessage(), $e->getCode(), $e);
+        }
+
+    }
+
+    /**
      * @param $toDeleteIds
      * @return Doctrine_Collection
      * @throws DaoException
      */
-    public function deleteEvents($toDeleteIds)
-    {
+
+    public function deleteEvents($toDeleteIds){
 
         try {
-
-            $q = Doctrine_Query::create()->delete('ClaimEvent')
+            $q = Doctrine_Query :: create()
+                ->update('ClaimEvent')
+                ->set('is_deleted', '?', ClaimEvent::DELETED)
                 ->whereIn('id', $toDeleteIds);
-
             return $q->execute();
 
         } catch (Exception $e) {

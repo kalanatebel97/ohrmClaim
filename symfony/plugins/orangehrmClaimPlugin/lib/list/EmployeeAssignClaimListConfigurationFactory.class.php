@@ -17,13 +17,72 @@
  * Boston, MA  02110-1301, USA
  */
 
-/**
- * Created by PhpStorm.
- * User: administrator
- * Date: 14/1/19
- * Time: 10:39 AM
- */
-class EmployeeAssignClaimListConfigurationFactory
-{
 
+class EmployeeAssignClaimListConfigurationFactory extends ohrmListConfigurationFactory
+{
+    protected function init()
+    {
+        parent::init();
+        $header1 = new ListHeader();
+        $header2 = new ListHeader();
+        $header3 = new ListHeader();
+        $header4 = new ListHeader();
+
+        $header1->populateFromArray(array(
+
+            'name' => __('Employee Name'),
+            'isSortable' => true,
+            'elementType' => 'link',
+            'textAlignmentStyle' => 'left',
+            'elementProperty' => array(
+                'labelGetter' => array('getEmployee','getFirstName','getLastName'),
+                'linkable' => true,
+                'placeholderGetters' => array('id' => 'getId'),
+                'urlPattern' => 'assignClaim?id={id}'
+            )
+
+        ));
+
+        $header2->populateFromArray(array(
+
+            'name' => __('Event Type'),
+            'isSortable' => false,
+            'elementType' => 'label',
+            'textAlignmentStyle' => 'left',
+            'elementProperty' => array(
+                'getter' => array('getClaimEvent', 'getName'),
+
+            )
+
+        ));
+
+        $header3->populateFromArray(array(
+
+            'name' => __('Description'),
+            'isSortable' => false,
+            'elementType' => 'label',
+            'textAlignmentStyle' => 'left',
+            'elementProperty' => array('getter' => 'getDescription'),
+
+
+        ));
+
+        $header4->populateFromArray(array(
+
+            'name' => __('Currency'),
+            'isSortable' => false,
+            'elementType' => 'label',
+            'textAlignmentStyle' => 'left',
+            'elementProperty' => array('getter' => 'getCurrency'),
+
+
+        ));
+
+        $this->headers = array($header1, $header2, $header3, $header4);
+    }
+
+    public function getClassName()
+    {
+        return 'ClaimRequest';
+    }
 }

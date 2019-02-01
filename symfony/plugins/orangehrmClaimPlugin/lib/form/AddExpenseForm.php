@@ -17,13 +17,74 @@
  * Boston, MA  02110-1301, USA
  */
 
-/**
- * Created by PhpStorm.
- * User: administrator
- * Date: 15/1/19
- * Time: 11:45 AM
- */
-class AddExpennseForm
+
+class AddExpenseForm extends sfForm
 {
+
+    protected $expenseTypes;
+    protected $expenseService;
+
+    /**
+     * @return ExpenseService
+     */
+    public function getExpenseService()
+    {
+        if (is_null($this->expenseService)) {
+            $this->expenseService = new ExpenseService();
+        }
+        return $this->expenseService;
+
+    }
+
+    /**
+     * @param mixed $expenseService
+     */
+    public function setExpenseService($expenseService)
+    {
+        $this->expenseService = $expenseService;
+    }
+
+
+
+    public function configure()
+    {
+        parent::configure();
+
+        $this->expenseTypes = $this->getExpenseTypesList();
+
+        $this->setWidgets(array(
+            'id' => new sfWidgetFormInputHidden(),
+            'expenseType' => new sfWidgetFormChoice(array('choices' => $this->expenseTypes)),
+            'date' => new ohrmWidgetDatePicker(array(), array('id' => 'assignExpense_dueDate')),
+            'amount' => new sfWidgetFormInput(),
+            'note' => new sfWidgetFormTextarea()
+        ));
+
+        $this->setValidators(array(
+            'id' => new sfValidatorInteger(array('required' => false)),
+            'expenseType' => new sfValidatorChoice(array('required' => true, 'choices' => array_keys($this->expenseTypes))),
+            'date' => new sfValidatorDate(array('required' => true)),
+            'amount' => new sfValidatorString(array('required' => true)),
+            'note' => new sfValidatorString(array('required' => false))
+        ));
+        $this->widgetSchema->setLabels(array(
+            'expenseType' => __("Expense Type") . '<em>*</em>',
+            'date' => __('Date') . '<em>*</em>',
+            'amount' => __('Amount') . '<em>*</em>',
+            'note' => __('Note')
+        ));
+        $this->getWidgetSchema()->setNameFormat('addExpense[%s]');
+    }
+
+    protected function getExpenseTypesList()
+    {
+        $expenseList = $this->getExpenseService()->getExpenseTypesList();
+        $list = array('' => '-- ' . __('Select') . ' --');
+
+        foreach ($expenseList as $expense) {
+            $list[$expense->getId()] = $expense->getName();
+        }
+        return $list;
+    }
 
 }

@@ -1,35 +1,65 @@
 $(document).ready(function () {
 
-    $('#frmCreateExpensesType').validate({
+    $('#btnCreate').click(function(e) {
+        e.stopImmediatePropagation();
+        if ($('#btnCreate').val() == lang_edit_expense) {
+            $('#saveFormHeading').text(saveFormHeading);
+            $('#createExpense_name').removeAttr('disabled');
+            $('#createExpense_description').removeAttr('disabled');
+            $('#createExpense_status').removeAttr('disabled');
+
+            $('#btnCreate').val(lang_create_expense);
+
+        }else if($('#btnCreate').val() == lang_create_expense) {
+            e.preventDefault();
+            if ($('#frmCreateExpense').valid()) {
+                $('#frmCreateExpense').submit();
+
+            }
+        }
+    });
+
+
+    $('#frmCreateExpense').validate({
         rules: {
-            'createExpenses[expenseName]': {
+            'createExpense[name]': {
                 required: true,
                 'maxlength': 255
             },
-            'createExpenses[description]': {
-                required: false,
+            'createExpense[description]': {
+                required: true,
                 'maxlength': 1000
             },
-            'createExpenses[status]': {
-                required: true,
 
-            },
 
         },
         messages: {
-            'createExpenses[expenseName]': {
+            'createExpense[name]': {
                 required: lang_required,
                 'maxlength': lang_maxChars
             },
-            'createExpenses[description]': {
-                'maxlength': lang_maxChars
-            },
-            'createExpenses[status]': {
+            'createExpense[description]': {
                 required: lang_required,
-
+                'maxlength': lang_maxChars
             }
 
+
+
         }
+    });
+
+    if(expenseId > 0 ){
+        $('#saveFormHeading').text(edit_form_heading);
+        $('#createExpense_name').attr('disabled','disabled');
+        $('#createExpense_description').attr('disabled','disabled');
+        $('#createExpense_status').attr('disabled','disabled');
+        $('#btnCreate').val(lang_edit_expense);
+
+    }
+    $('#btnCancel').click(function () {
+        window.location.replace(viewExpenseUrl);
+
+
     });
 
     $('#btnDelete').click(function () {
@@ -47,14 +77,6 @@ $(document).ready(function () {
         $("#deleteConfirmation").dialog("close");
     });
 
-    $('#btnCreate').click(function (e) {
-        e.preventDefault();
-        if ($('#frmCreateExpensesType').valid()) {
-            $('#frmCreateExpensesType').submit();
-            $('#frmCreateExpensesType').resetForm();
-
-        }
-    });
-
 
 })
+

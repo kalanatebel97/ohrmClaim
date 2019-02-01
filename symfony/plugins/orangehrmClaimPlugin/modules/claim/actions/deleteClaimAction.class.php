@@ -17,13 +17,58 @@
  * Boston, MA  02110-1301, USA
  */
 
-/**
- * Created by PhpStorm.
- * User: administrator
- * Date: 8/1/19
- * Time: 8:07 AM
- */
-class deleteClaimAction
+class deleteClaimAction extends sfAction
 {
+    private $claimService;
+
+    /**
+     * @return ClaimService
+     */
+    public function getClaimservice() {
+
+        if (!($this->claimService instanceof ClaimService)) {
+            $this->claimService = new ClaimService();
+        }
+
+        return $this->claimService;
+    }
+
+    /**
+     * @param $claimService
+     */
+    public function setClaimService($claimService) {
+
+        $this->claimService = $claimService;
+    }
+
+    public function execute($request) {
+
+        $userPermissions = $this->getDataGroupPermissions('time_customers');
+
+          if ($userPermissions->canDelete()) {
+
+            $form = new DefaultListForm();
+            $form->bind($request->getParameter($form->getName()));
+            if ($form->isValid()) {
+                $toBeDeletedClaimIds = $request->getParameter('chkSelectRow');
+                if (!empty($toBeDeletedClaimIds)) {
+                    foreach ($toBeDeletedClaimIds as $toBeDeletedClaimId) {
+                        $claim = $this->getClaimservice()->deleteClaims($toBeDeletedClaimId);
+                    }
+                    $this->getUser()->setFlash('success', __(TopLevelMessages::DELETE_SUCCESS));
+                }
+            }
+            $this->redirect('claim/viewClaim');
+        }
+    }
+
+    /**
+     * @param $string
+     * @return ResourcePermission
+     */
+    private function getDataGroupPermissions($string) {
+
+        return new ResourcePermission(true, true, true, true);
+    }
 
 }

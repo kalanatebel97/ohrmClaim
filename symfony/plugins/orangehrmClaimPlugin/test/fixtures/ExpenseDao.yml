@@ -1,0 +1,12 @@
+ExpenseType:
+  0: {id: 1, name: "expenseType1", description: "expenseType1 desc",status: 'Active' }
+  1: {id: 2, name: "expenseType2", description: "expenseType2 desc",status: 'Active' }
+  2: {id: 3, name: "expenseType3", description: "expenseType3 desc",status: 'Inactive' }
+  3: {id: 4, name: "expenseType4", description: "expenseType4 desc",status: 'Inactive' }
+Expense:
+  0: {id: 1, expense_type: "expense1", date: "expense1 date",amount: '100',note: 'expense1 note' }
+  1: {id: 2, expense_type: "expense2", date: "expense2 date",amount: '200',note: 'expense2 note' }
+  2: {id: 3, expense_type: "expense3", date: "expense3 date",amount: '300',note: 'expense3 note' }
+  3: {id: 4, expense_type: "expense4", date: "expense4 date",amount: '400',note: 'expense4 note' }
+
+

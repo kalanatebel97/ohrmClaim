@@ -23,7 +23,12 @@
  * Date: 30/1/19
  * Time: 4:07 PM
  */
-class addMyExpenseAction
+class addMyExpenseAction extends addExpenseAction
 {
+
+    protected function getRedirectUrl($claimId)
+    {
+        return 'claim/submitClaim?id='.$claimId;
+    }
 
 }

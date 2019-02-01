@@ -17,13 +17,63 @@
  * Boston, MA  02110-1301, USA
  */
 
-/**
- * Created by PhpStorm.
- * User: administrator
- * Date: 2/1/19
- * Time: 12:53 PM
- */
-class deleteEventAction
-{
+
+class deleteEventAction extends sfAction {
+
+    private $eventService;
+
+    /**
+     * @return EventService
+     */
+    public function getEventservice() {
+
+
+        if (!($this->eventService instanceof EventService)) {
+            $this->eventService = new EventService();
+        }
+
+        return $this->eventService;
+    }
+
+    /**
+     * @param $createEventService
+     */
+    public function setCreateEventService($eventService) {
+
+        $this->eventService = $eventService;
+    }
+
+    public function execute($request) {
+
+        $userPermissions = $this->getDataGroupPermissions('time_customers');
+
+        if ($userPermissions->canDelete()) {
+
+            $form = new DefaultListForm();
+            $form->bind($request->getParameter($form->getName()));
+
+            if ($form->isValid()) {
+                $toBeDeletedEventIds = $request->getParameter('chkSelectRow');
+                if (!empty($toBeDeletedEventIds)) {
+                        foreach ($toBeDeletedEventIds as $toBeDeletedEventId) {
+                            $event = $this->getEventservice()->deleteEvents($toBeDeletedEventId);
+                        }
+                        $this->getUser()->setFlash('success', __(TopLevelMessages::DELETE_SUCCESS));
+                }
+            }
+            $this->redirect('claim/viewEvent');
+        }
+
+
+    }
+
+    /**
+     * @param $string
+     * @return ResourcePermission
+     */
+    private function getDataGroupPermissions($string) {
+
+        return new ResourcePermission(true, true, true, true);
+    }
 
 }

@@ -6,7 +6,7 @@
  * Time: 5:01 PM
  */
 
-class orangehrmClaimModulePluginConfiguration extends sfPluginConfiguration
+class orangehrmClaimPluginConfiguration extends sfPluginConfiguration
 {
 
     public function initialize()

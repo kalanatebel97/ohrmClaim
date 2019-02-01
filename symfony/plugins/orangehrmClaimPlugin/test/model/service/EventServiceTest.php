@@ -18,17 +18,16 @@
  */
 
 /**
- * Created by PhpStorm.
- * User: administrator
- * Date: 31/12/18
- * Time: 9:44 AM
+ * Class EventServiceTest
+ * @group Event
  */
-class CreateEventServiceTest extends PHPUnit_Framework_TestCase
+class EventServiceTest extends PHPUnit_Framework_TestCase
 {
-       protected $createEventService;
+    protected $eventService;
 
-    protected function setUp() {
-        $this->CreateEventService = new EventService();
+    protected function setUp()
+    {
+        $this->eventService = new EventService();
         $this->fixture = sfConfig::get('sf_plugins_dir') . '/orangehrmClaimPlugin/test/fixtures/EventDao.yml';
         TestDataService::populate($this->fixture);
     }
@@ -39,28 +38,32 @@ class CreateEventServiceTest extends PHPUnit_Framework_TestCase
      */
     public function testGetEventById()
     {
-        $id = 2;
+
+        $id = 3;
         $claimEvent = new ClaimEvent();
-        $claimEvent->setName('event2');
+        $claimEvent->setName('event3');
         $claimEvent->setId($id);
 
         $mockDao = $this->getMockBuilder('EventDao')->getMock();
         $mockDao->expects($this->once())
             ->method('getEventById')
             ->with($id)
-            ->will($this->returnValue($id));
+            ->will($this->returnValue($claimEvent));
 
-        $this->createEventService->setCreateEventDao($mockDao);
+        $this->eventService->setEventDao($mockDao);
 
-        $retVal = $this->createEventService->getEventById($id);
+        $retVal = $this->eventService->getEventById($id);
 
         $this->assertEquals($claimEvent, $retVal);
+
+
 
     }
 
 
     public function testDeleteEvents()
     {
+
         $id = 3;
         $mockDao = $this->getMockBuilder('EventDao')->getMock();
         $mockDao->expects($this->once())
@@ -68,9 +71,86 @@ class CreateEventServiceTest extends PHPUnit_Framework_TestCase
             ->with($id)
             ->will($this->returnValue(23));
 
-        $this->createEventService->setCreateEventDao($mockDao);
+        $this->eventService->setEventDao($mockDao);
 
-        $result = $this->createEventService->deleteEvents($id);
+        $result = $this->eventService->deleteEvents($id);
         $this->assertEquals(23, $result);
+    }
+
+    /**
+     * @throws Doctrine_Connection_Exception
+     * @throws Doctrine_Record_Exception
+     */
+    public function testGetEventList()
+    {
+
+
+        $id = 2;
+        $claimEvent = new ClaimEvent();
+        $claimEvent->setName('event2');
+        $claimEvent->setId($id);
+
+        $mockDao = $this->getMockBuilder('EventDao')->getMock();
+        $mockDao->expects($this->once())
+            ->method('getEventList')
+            ->with($id)
+            ->will($this->returnValue($claimEvent));
+
+        $this->eventService->setEventDao($mockDao);
+
+        $retVal = $this->eventService->getEventList($id);
+
+        $this->assertEquals($claimEvent, $retVal);
+
+
+    }
+
+    public function testGetEventCount()
+    {
+        $eventDao = $this->getMockBuilder('EventDao')->getMock();
+        $eventDao->expects($this->once())
+            ->method('getEventCount')
+            ->with("")
+            ->will($this->returnValue(2));
+
+        $this->eventService->setEventDao($eventDao);
+
+        $result = $this->eventService->getEventCount("");
+        $this->assertEquals($result, 2);
+
+    }
+
+    /**
+     * @throws Doctrine_Connection_Exception
+     * @throws Doctrine_Record_Exception
+     */
+    public function testSaveEvent()
+    {
+        $data = array(
+            'name' => 'Event Event',
+            'description' => 'Event Event Description'
+        );
+
+
+        $mockEventType = new ClaimEvent();
+        $mockEventType->setId(1);
+        $mockEventType->setName($data['name']);
+        $mockEventType->setDescription($data['description']);
+
+        $mockDao = $this->getMockBuilder('EventDao')->getMock();
+        $mockDao->expects($this->once())
+            ->method('saveEvent')
+            ->will($this->returnValue($mockEventType));
+
+        $this->eventService->setEventDao($mockDao);
+
+
+        $result = $this->eventService->saveEvent($data);
+        $this->assertTrue($result instanceof ClaimEvent);
+        $this->assertEquals($result->getName(), $data['name']);
+        $this->assertEquals($result->getDescription(), $data['description']);
+
+
+        $this->assertTrue($result->getId() > 0);
     }
 }

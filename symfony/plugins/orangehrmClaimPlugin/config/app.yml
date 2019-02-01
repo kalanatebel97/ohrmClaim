@@ -1,3 +1,3 @@
 all:
-  orangehrmClaimModulePlugin:
+  orangehrmClaimPlugin:
     version: '1.0'

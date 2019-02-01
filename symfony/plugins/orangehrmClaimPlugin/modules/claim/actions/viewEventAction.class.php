@@ -17,33 +17,33 @@
  * Boston, MA  02110-1301, USA
  */
 
-class ViewEventAction extends sfAction
-{
-    private $createEventService;
+class viewEventAction extends sfAction {
+
+    private $eventService;
 
     /**
      * @return EventService
      */
-    public function getCreateEventservice()
-    {
+    public function getEventservice() {
 
-        if (!($this->createEventService instanceof EventService)) {
-            $this->createEventService = new EventService();
+
+        if (!($this->eventService instanceof EventService)) {
+            $this->eventService = new EventService();
         }
 
-        return $this->createEventService;
+        return $this->eventService;
     }
 
     /**
-     * @param $createEventService
+     * @param $eventService
      */
-    public function setCreateEventService($createEventService)
-    {
-        $this->createEventService = $createEventService;
+    public function setEventService($eventService){
+
+        $this->eventService = $eventService;
     }
 
-    public function execute($request)
-    {
+    public function execute($request){
+
         // TODO: Implement execute() method.
 
         //$usrObj = $this->getUser()->getAttribute('user');
@@ -64,7 +64,7 @@ class ViewEventAction extends sfAction
         if ($this->userPermissions->canRead()) {
             $noOfRecords = sfConfig::get('app_items_per_page');
             $offset = ($pageNumber >= 1) ? (($pageNumber - 1) * $noOfRecords) : ($request->getParameter('pageNo', 1) - 1) * $noOfRecords;
-            $eventList = $this->getCreateEventService()->getEventList($noOfRecords, $offset, $sortField, $sortOrder);
+            $eventList = $this->getEventService()->getEventList($noOfRecords, $offset, $sortField, $sortOrder);
             $this->setListComponent($eventList, $noOfRecords, $pageNumber, $this->userPermissions);
             $this->getUser()->setAttribute('pageNumber', $pageNumber);
             $params = array();
@@ -73,8 +73,15 @@ class ViewEventAction extends sfAction
 
     }
 
-    public function setListComponent($eventList, $noOfRecords, $pageNumber, $permissions)
-    {
+    /**
+     * @param $eventList
+     * @param $noOfRecords
+     * @param $pageNumber
+     * @param $permissions
+     * @throws DaoException
+     */
+    public function setListComponent($eventList, $noOfRecords, $pageNumber, $permissions){
+
 
         if ($permissions->canCreate()) {
             $buttons['Add'] = array('label' => 'Add');
@@ -96,7 +103,10 @@ class ViewEventAction extends sfAction
 
         $runtimeDefinitions['buttons'] = $buttons;
         $runtimeDefinitions['hasSelectableRows'] = true;
+        $runtimeDefinitions['hasSummary'] = false;
         $runtimeDefinitions['title'] = __('Events');
+        $runtimeDefinitions['formMethod'] = sfRequest::POST;
+        $runtimeDefinitions['formAction'] = 'claim/deleteEvent';
 
         $configurationFactory = new EmployeeClaimEventTypeListConfigurationFactory();
         //$configurationFactory->setIsLinkable($isLinkable);
@@ -105,48 +115,17 @@ class ViewEventAction extends sfAction
         ohrmListComponent::setConfigurationFactory($configurationFactory);
         ohrmListComponent::setListData($eventList);
         ohrmListComponent::setItemsPerPage($noOfRecords);
-        ohrmListComponent::setNumberOfRecords($this->getCreateEventService()->getEventCount());
+        ohrmListComponent::setNumberOfRecords($this->getEventService()->getEventCount());
 
     }
 
-    private function getDataGroupPermissions($string)
-    {
+    /**
+     * @param $string
+     * @return ResourcePermission
+     */
+    private function getDataGroupPermissions($string){
+
         return new ResourcePermission(true, true, true, true);
     }
-    /*
-     $configurationFactory = new EmployeeClaimEventTypeListConfigurationFactory();
-     $buttons = array();
-     $hasSelectableRows = false;
 
-
-     $buttons['Add'] = array('label' => 'Add');
-     $hasSelectableRows = true;
-     $buttons['Delete'] = array(
-         'type' => 'submit',
-         'label' => 'Delete',
-         'class' => 'delete',
-         'data-toggle' => 'modal',
-         'data-target' => '#deleteConfModal'
-     );
-
-
-     $configurationFactory->setRuntimeDefinitions(array(
-         'hasSelectableRows' => $hasSelectableRows,
-         'hasSummary' => false,
-         'buttons' => $buttons,
-         'buttonsPosition' => 'before-data',
-         'title' => __('Events'),
-         'formAction' => 'claim/deleteEvents',
-         'formMethod' => 'post'
-
-     ));
-
-     $noOfRecords = sfConfig::get('app_items_per_page');
-     //ohrmListComponent::setActivePlugin('orangehrmClaimPlugin');
-     ohrmListComponent::setConfigurationFactory($configurationFactory);
-     ohrmListComponent::setPageNumber(1);
-     ohrmListComponent::setListData($tasks);
-     ohrmListComponent::setItemsPerPage($noOfRecords);
-     ohrmListComponent::setNumberOfRecords(count($tasks));
- }*/
 }

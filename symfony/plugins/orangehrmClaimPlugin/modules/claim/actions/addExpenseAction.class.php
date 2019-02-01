@@ -17,13 +17,65 @@
  * Boston, MA  02110-1301, USA
  */
 
-/**
- * Created by PhpStorm.
- * User: administrator
- * Date: 16/1/19
- * Time: 11:07 AM
- */
-class addExpenseAction
+class addExpenseAction extends sfAction
 {
+    protected $expenseService;
+
+    /**
+     * @return ExpenseService
+     */
+    public function getExpenseService()
+    {
+        if (!($this->expenseService instanceof ExpenseService)) {
+            $this->expenseService = new ExpenseService();
+        }
+        return $this->expenseService;
+    }
+
+    /**
+     * @param $expenseService
+     */
+    public function setExpenseService($expenseService)
+    {
+        $this->expenseService = $expenseService;
+    }
+
+    public function execute($request)
+    {
+        $this->claimId = $request->getParameter('claimId', null);
+
+        if(is_null($this->claimId)){
+            $this->getUser()->setFlash('error', __(TopLevelMessages::SAVE_FAILURE));
+        }
+
+        $this->form = new AddExpenseForm();
+
+        if ($request->isMethod('post')) {
+
+            $this->form->bind($request->getParameter($this->form->getName()));
+
+            if ($this->form->isValid()) {
+
+                $formValues = $this->form->getValues();
+                $loggedInUser = $this->getUser()->getAttribute('user');
+//                $formValues['requestId'] = $loggedInUser->getUserId();
+                $result = $this->getExpenseService()->saveExpense($this->claimId, $formValues);
+
+                if ($result instanceof Expense) {
+
+                    $this->getUser()->setFlash('success', __(TopLevelMessages::SAVE_SUCCESS));
+
+                } else {
+                    $this->getUser()->setFlash('error', __(TopLevelMessages::SAVE_FAILURE));
+                }
+
+            } else {
+                $this->getUser()->setFlash('error', __(TopLevelMessages::VALIDATION_FAILED));
+            }
+        }
+
+        $this->redirect($request->getReferer());
+    }
+
 
 }

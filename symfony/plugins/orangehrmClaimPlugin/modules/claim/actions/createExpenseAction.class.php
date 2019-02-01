@@ -17,16 +17,17 @@
  * Boston, MA  02110-1301, USA
  */
 
-class CreateExpensesAction extends sfAction
+class CreateExpenseAction extends sfAction
 {
 
     private $expenseService;
 
     /**
-     * @return mixed
+     * @return ExpenseService
      */
     public function getExpenseService()
     {
+
         if (!($this->expenseService instanceof ExpenseService)) {
             $this->expenseService = new ExpenseService();
         }
@@ -34,22 +35,28 @@ class CreateExpensesAction extends sfAction
     }
 
     /**
-     * @param mixed $expenseService
+     * @param $expenseService
      */
     public function setExpenseService($expenseService)
     {
+
         $this->expenseService = $expenseService;
     }
 
+    /**
+     * @param sfRequest $request
+     * @return mixed|void
+     * @throws sfStopException
+     */
     public function execute($request)
     {
-        // TODO: Implement execute() method.
-        $this->expenseId = $request->getParameter('id', null);
+        $request->setParameter('initialActionName', 'viewExpense');
 
+        $this->expenseId = $request->getParameter('id', null);
         $defaults = array();
         if (!is_null($this->expenseId)) {
 
-            $defaults = $this->getExpenseService()->getExpenseAsArray($this->expenseId);
+            $defaults = $this->getExpenseService()->getExpenseTypeAsArray($this->expenseId);
         }
 
         $this->form = new CreateExpenseForm($defaults);
@@ -60,14 +67,18 @@ class CreateExpensesAction extends sfAction
 
             if ($this->form->isValid()) {
                 $formValues = $this->form->getValues();
-                $result = $this->getExpenseService()->saveExpense($formValues);
-                $this->redirect('claim/viewExpense');
+                $loggedInUser = $this->getUser()->getAttribute('user');
+                $formValues['addedBy'] = $loggedInUser->getUserId();
+                $result = $this->getExpenseService()->saveExpenseType($formValues);
+
                 if ($result instanceof ExpenseType) {
                     $this->getUser()->setFlash('success', __(TopLevelMessages::SAVE_SUCCESS));
                 } else {
                     $this->getUser()->setFlash('error', __(TopLevelMessages::SAVE_FAILURE));
                 }
+                $this->redirect('claim/viewExpense');
             } else {
+
                 $this->getUser()->setFlash('error', __(TopLevelMessages::VALIDATION_FAILED));
 
             }
@@ -76,74 +87,4 @@ class CreateExpensesAction extends sfAction
 
     }
 
-/*
-    public function setListComponent($tasks)
-    {
-
-        $configurationFactory = new EmployeeExpensesTypesListConfigurationFactory();
-        $buttons = array();
-        $hasSelectableRows = false;
-
-
-        $buttons['Add'] = array('label' => 'Add');
-        $hasSelectableRows = true;
-        $buttons['Delete'] = array(
-            'type'=> 'submit',
-            'label' => 'Delete',
-            'class' => 'delete',
-            'data-toggle'=> 'modal',
-            'data-target' => '#deleteConfModal'
-        );
-
-
-        $configurationFactory->setRuntimeDefinitions(array(
-            'hasSelectableRows' => $hasSelectableRows,
-            'hasSummary' => false,
-            'buttons' => $buttons,
-            'buttonsPosition' => 'before-data',
-            'title' =>  __('Expenses Type'),
-            'formAction'=> 'claim/deleteExpenses',
-            'formMethod' => 'post'
-
-        ));
-
-        $noOfRecords = sfConfig::get('app_items_per_page');
-        //ohrmListComponent::setActivePlugin('orangehrmClaimPlugin');
-        ohrmListComponent::setConfigurationFactory($configurationFactory);
-        ohrmListComponent::setPageNumber(1);
-        ohrmListComponent::setListData($tasks);
-        ohrmListComponent::setItemsPerPage($noOfRecords);
-        ohrmListComponent::setNumberOfRecords(count($tasks));
-    }
-
-*/
-    /**
-     * TODO :  should call a service and get the list of task object
-     * @return Doctrine_Collection
-     * @throws Doctrine_Collection_Exception
-     */
-   /* protected function getTaskList(){
-        $tasks1 = new ExpenseType();
-        $tasks1->setName('bbbb1');
-        $tasks1->setDescription('getDescription getDescription');
-        $tasks1->setStatus('active1');
-
-        $tasks2 = new ExpenseType();
-        $tasks2->setName('bbbb 2');
-        $tasks2->setDescription('getDescription getDescription 2');
-        $tasks2->setStatus('active2');
-
-        $tasks3 = new ExpenseType();
-        $tasks3->setName("bbb3");
-        $tasks3->setDescription('getDescription getDescription 3');
-        $tasks3->setStatus('active3');
-
-        $taskCollection = new Doctrine_Collection('ExpenseType');
-        $taskCollection->add($tasks1);
-        $taskCollection->add($tasks2);
-        $taskCollection->add($tasks3);
-
-        return $taskCollection;
-
-    }*/
 }

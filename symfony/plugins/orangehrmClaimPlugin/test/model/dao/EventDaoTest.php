@@ -18,12 +18,58 @@
  */
 
 /**
- * Created by PhpStorm.
- * User: administrator
- * Date: 31/12/18
- * Time: 9:49 AM
+ * Class EventDaoTest
+ * @group Event
  */
-class CreateEventDaoTest
+class EventDaoTest extends PHPUnit_Framework_TestCase
 {
+    protected function setUp()
+    {
+
+        $this->eventDao = new EventDao();
+        $this->fixture = sfConfig::get('sf_plugins_dir') . '/orangehrmClaimPlugin/test/fixtures/EventDao.yml';
+        TestDataService::populate($this->fixture);
+    }
+
+    public function testSaveEvent(){
+
+        $eventData = array();
+        $eventData['name'] = 'Test Event1';
+        $eventData['description'] = 'Test event 1 description';
+
+        $eventObj = $this->eventDao->saveEvent($eventData);
+
+        $this->assertEquals('Test Event1', $eventObj->getName());
+        $this->assertEquals('Test event 1 description', $eventObj->getDescription());
+    }
+
+    public function testGetEventById() {
+
+        $result = $this->eventDao->getEventById(2);
+        $this->assertEquals($result->getName(), "event2");
+    }
+
+    public function testGetEventList() {
+
+        $result = $this->eventDao->getEventList("", "", "", "", false);
+        $this->assertEquals(4, count($result));
+    }
+
+    public function testDeleteEvents() {
+
+        $this->eventDao->deleteEvents(3);
+        $claimEvents = $this->eventDao->getEventById(3);
+        $this->assertFalse($claimEvents instanceof ClaimEvent);
+
+
+
+    }
+
+    public function testGetEventCount() {
+
+        $result = $this->eventDao->getEventCount(false);
+        $this->assertEquals(4, $result);
+    }
+
 
 }
